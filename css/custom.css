@@ -1,0 +1,7 @@
+.reveal pre {
+    font-size: 16px;
+    font-family: monaco,monospace;
+}
+.reveal code {
+	font-family: monaco,monospace;
+}

@@ -1,4 +1,5 @@
 .DS_Store
+._*
 .svn
 log/*.log
 tmp/**
