@@ -66,7 +66,7 @@
                     </ul>
                 </section>
                 <section>
-                    <h2>Gimme the Hello World thingy</h2>
+                    <h2>Gimme that Hello World thingy</h2>
                     <pre><code>
 require_once __DIR__.'/../vendor/autoload.php'; 
 
@@ -79,11 +79,133 @@ $app->get('/hello/{name}', function($name) use($app) {
 $app->run(); 
                     </code></pre>
                 </section>
-                
                 <section>
-                    <h2>TODO</h2>
+                    <section>
+                    <h2>Pimped with Pimple</h2>
+                        <ul>
+                            <li>Dependency injection</li>
+                            <li>Mock your objects for testing</li>
+                            <li>Singleton shared services</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Pimple: Parameters</h3>
+                        <pre><code>
+$app['some_parameter'] = 'value';
+
+echo $app['some_parameter'];
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>Pimple: Services</h3>
+                        <pre><code>
+$app['some_service'] = function () {
+    return new Service();
+};
+
+$service = $app['some_service'];
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>Pimple: Shared Services</h3>
+                        <pre><code>
+$app['some_service'] = $app->share(function () {
+    return new Service();
+});
+                        </code></pre>
+                    </section>
                 </section>
-                                
+                <section>
+                    <section>
+                        <h2>Routing</h2>
+                        <pre><code>
+$blogPosts = array(
+    1 => array(
+        'date'      => '2011-03-29',
+        'author'    => 'igorw',
+        'title'     => 'Using Silex',
+        'body'      => '...',
+    ),
+);
+
+$app->get('/blog/show/{id}', function(Silex\Application $app, $id) 
+    use ($blogPosts) {
+    if (!isset($blogPosts[$id])) {
+        $app->abort(404, "Post $id does not exist.");
+    }
+
+    $post = $blogPosts[$id];
+
+    return  "&lt;h1&gt;{$post['title']}&lt;/h1&gt;".
+            "&lt;p&gt;{$post['body']}&lt;/p&gt;";
+});
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>REST-APIs made easy</h3>
+                        <pre><code>
+$userProvider = function($id) {
+    return new User($id);
+};
+
+$app->get('/user/{user}', function(User $user) use ($app) {
+    return $app->json($user->toArray());
+})->convert('user', $userProvider);
+
+$app->post('/users', function() use ($app) {
+    // create user...
+    
+    return $app->redirect('/user/' . $user->id);
+});
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>And much more...</h3>
+                        <pre><code>
+$app->get('...', function() {})
+    ->value('id', '1')
+    ->assert('id', '\d+')
+    ->requireHttps()
+    ->method('get')
+    ->convert('id', function () { // ... })
+    ->middleware(function () { // ... });
+                        </code></pre>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Built-in Service Providers</h2>
+                        <ul>
+                            <li>Doctrine</li>
+                            <li>Monolog</li>
+                            <li>Session</li>
+                            <li>Translation</li>
+                            <li>Swiftmailer</li>
+                            <li>Twig</li>
+                            <li>URL Generator</li>
+                            <li>Validator</li>
+                            <li>HTTP Cache</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Example: Twig Service</h3>
+                        <pre><code>
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
+    'twig.path' => __DIR__.'/views',
+));
+
+$app->get('/hello/{name}', function ($name) use ($app) {
+    return $app['twig']->render('hello.twig', array(
+        'name' => $name,
+    ));
+});
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>Built you own service providers!</h3>
+                        <p>This makes your code easily reusable.</p>
+                    </section>
+                </section>
                 <section>
                     <h1>THE END</h1>
                     <h3 class="inverted">by Mario Volke</h3>

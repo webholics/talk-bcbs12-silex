@@ -1,7 +1,16 @@
+body {
+    background: #222;
+}
 .reveal pre {
     font-size: 16px;
     font-family: monaco,monospace;
 }
 .reveal code {
 	font-family: monaco,monospace;
+}
+.reveal h1, 
+.reveal h2, 
+.reveal h3, 
+.reveal h4 {	
+	text-transform: none;
 }
